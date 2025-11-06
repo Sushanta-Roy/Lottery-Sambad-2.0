@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Lottery Sambad</title>
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <meta name="description" content="Get latest Nagaland Dear Lottery results today for 1pm, 6pm, and 8pm draws. Check winning numbers instantly with our official lottery results portal. Download PDF results free.">
+    <meta name="keywords" content="Nagaland lottery result, Dear lottery result today, lottery results 1pm 6pm 8pm, Nagaland state lottery, lottery winning numbers">
+    <meta name="author" content="Nagaland Lottery Results Portal">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Nagaland Dear Lottery Results Today | Official Portal">
+    <meta property="og:description" content="Check latest Nagaland Dear Lottery results for all draws. Fast, accurate, and official lottery results.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:image" content="https://yourwebsite.com/lottery-results-preview.jpg">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Nagaland Dear Lottery Results Today">
+    <meta name="twitter:description" content="Get instant Nagaland lottery results for all daily draws">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yourwebsite.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Nagaland Dear Lottery Results",
+        "description": "Official portal for Nagaland Dear Lottery results",
+        "url": "https://yourwebsite.com",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://yourwebsite.com?date={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Navigation Menu -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" aria-label="Lottery Results home">
+                    <img src="logo.png" alt="Lottery Results">
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-active">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="privacy.html">Privacy</a></li>
+                <li><a href="terms.html">Terms</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Nagaland Dear Lottery Result</h1>
+        </header>
+
+        <!-- Ad Space - Top Banner -->
+        <div class="ad-banner ad-top">
+            <div class="ad-placeholder">
+                <span>Advertisement</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Controls Section -->
+            <section class="controls-section">
+                <div class="custom-date-picker">
+                    <div class="date-input-container">
+                        <div class="date-display" id="date-display" tabindex="0">
+                            <span class="date-icon">📅</span>
+                            <span class="date-text" id="date-text">Select Date</span>
+                        </div>
+                        <div class="date-picker-calendar" id="date-picker-calendar">
+                            <div class="calendar-header">
+                                <button type="button" class="calendar-nav-btn" id="prev-month">‹</button>
+                                <div class="calendar-month-year" id="calendar-month-year">January 2025</div>
+                                <button type="button" class="calendar-nav-btn" id="next-month">›</button>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="calendar-weekdays">
+                                    <div class="calendar-weekday">Sun</div>
+                                    <div class="calendar-weekday">Mon</div>
+                                    <div class="calendar-weekday">Tue</div>
+                                    <div class="calendar-weekday">Wed</div>
+                                    <div class="calendar-weekday">Thu</div>
+                                    <div class="calendar-weekday">Fri</div>
+                                    <div class="calendar-weekday">Sat</div>
+                                </div>
+                                <div class="calendar-days" id="calendar-days">
+                                    <!-- Calendar days will be generated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hidden input for compatibility -->
+                    <input type="hidden" id="date-picker" />
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary time-button" data-time="1pm">1:00 PM Draw</button>
+                    <button class="btn-success time-button" data-time="6pm">6:00 PM Draw</button>
+                    <button class="btn-warning time-button" data-time="8pm">8:00 PM Draw</button>
+                </div>
+            </section>
+
+            <!-- Result Display Section -->
+            <section class="result-section">
+                <div class="image-container" id="result-container">
+                    <div class="image-placeholder">
+                        <div class="image-icon">🎫</div>
+                        <div>
+                            <div>Lottery Result Display</div>
+                            <div style="font-size: 0.8125rem; margin-top: 0.5rem; opacity: 0.8;">Select a date and time slot to view results</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Download Section -->
+            <section class="download-section">
+                <a href="#" class="download-btn" id="download-link">
+                    <svg class="download-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Download Result
+                </a>
+            </section>
+        </main>
+
+        <!-- Sidebar Ad -->
+        <aside class="sidebar-ad">
+            <div class="ad-placeholder vertical">
+                <span>Advertisement</span>
+            </div>
+        </aside>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <div class="content-grid">
+                <article class="info-card">
+                    <h2>🎆 How to Check Results</h2>
+                    <p>Select your desired date using the date picker above, then choose the draw time (1 PM, 6 PM, or 8 PM). The latest lottery result will be displayed instantly with the option to download the official PDF.</p>
+                </article>
+                
+                <article class="info-card">
+                    <h2>🕐 Draw Timings</h2>
+                    <ul>
+                        <li><strong>1:00 PM Draw:</strong> Results available after 1:00 PM daily</li>
+                        <li><strong>6:00 PM Draw:</strong> Results available after 6:00 PM daily</li>
+                        <li><strong>8:00 PM Draw:</strong> Results available after 8:00 PM daily</li>
+                    </ul>
+                </article>
+                
+                <article class="info-card">
+                    <h2>📊 Latest Updates</h2>
+                    <p>Stay updated with the most recent Nagaland Dear Lottery results. Our portal provides instant access to official lottery results as soon as they are announced by the Nagaland State Government.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Banner -->
+        <div class="ad-banner ad-bottom">
+            <div class="ad-placeholder">
+                <span>Advertisement</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Lottery Info</h3>
+                <ul>
+                    <li><a href="#">Draw Schedule</a></li>
+                    <li><a href="#">How to Play</a></li>
+                    <li><a href="#">Prize Structure</a></li>
+                    <li><a href="#">Winners List</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="#">Disclaimer</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Nagaland Lottery Results Portal. All rights reserved. | This website is not affiliated with the official Nagaland State Lottery.</p>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

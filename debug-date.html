@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Debug Test</title>
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; }
+        .error { background: #f8d7da; }
+        button { padding: 10px 20px; margin: 5px; }
+        pre { background: #333; color: white; padding: 10px; border-radius: 5px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Date Handling Debug</h1>
+    <p>This will help us debug why the date/time selection isn't working.</p>
+
+    <div class="debug">
+        <h3>Test Date Selection</h3>
+        <input type="date" id="test-date" value="2025-08-12">
+        <select id="test-time">
+            <option value="1pm">1:00 PM</option>
+            <option value="6pm">6:00 PM</option>
+        </select>
+        <button onclick="testDateSelection()">Test Date Selection</button>
+    </div>
+
+    <div class="debug">
+        <h3>Current Date State</h3>
+        <button onclick="showCurrentDateState()">Show Current Date State</button>
+    </div>
+
+    <div class="debug">
+        <h3>Test Known File</h3>
+        <button onclick="testKnownFile()">Test 12-08-2025 1pm.webp</button>
+    </div>
+
+    <div id="results"></div>
+
+    <h3>Console Output:</h3>
+    <pre id="console"></pre>
+
+    <script>
+        function log(message) {
+            console.log(message);
+            const consoleEl = document.getElementById('console');
+            consoleEl.textContent += new Date().toLocaleTimeString() + ': ' + message + '\n';
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        function formatDateForDisplay(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function formatDateForInput(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        async function checkImageExists(filename) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                let resolved = false;
+                
+                const timeout = setTimeout(() => {
+                    if (!resolved) {
+                        resolved = true;
+                        log(`❌ TIMEOUT: ${filename}`);
+                        resolve(false);
+                    }
+                }, 3000);
+                
+                img.onload = () => {
+                    if (!resolved) {
+                        resolved = true;
+                        clearTimeout(timeout);
+                        log(`✅ EXISTS: ${filename}`);
+                        resolve(true);
+                    }
+                };
+                
+                img.onerror = () => {
+                    if (!resolved) {
+                        resolved = true;
+                        clearTimeout(timeout);
+                        log(`❌ NOT FOUND: ${filename}`);
+                        resolve(false);
+                    }
+                };
+                
+                img.src = filename;
+            });
+        }
+
+        async function testDateSelection() {
+            const dateInput = document.getElementById('test-date').value;
+            const timeInput = document.getElementById('test-time').value;
+            
+            log(`🧪 Testing Date Selection:`);
+            log(`   Input date: ${dateInput}`);
+            log(`   Input time: ${timeInput}`);
+            
+            // Convert like the main script does
+            const selectedDate = new Date(dateInput + 'T00:00:00');
+            log(`   Parsed Date object: ${selectedDate}`);
+            log(`   Date.toDateString(): ${selectedDate.toDateString()}`);
+            
+            // Format the date to match filename pattern (DD-MM-YYYY)
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+            const year = selectedDate.getFullYear();
+            const dateStr = `${day}-${month}-${year}`;
+            
+            log(`   Formatted for filename: ${dateStr}`);
+            log(`   Full search pattern: ${dateStr} ${timeInput}.webp`);
+            
+            // Test the exact filename
+            const filename = `${dateStr} ${timeInput}.webp`;
+            const exists = await checkImageExists(filename);
+            
+            const results = document.getElementById('results');
+            results.innerHTML = `
+                <div class="debug ${exists ? 'success' : 'error'}">
+                    <h4>Search Result</h4>
+                    <p><strong>Looking for:</strong> ${filename}</p>
+                    <p><strong>Result:</strong> ${exists ? '✅ Found' : '❌ Not Found'}</p>
+                    <p><strong>Date conversion:</strong> ${dateInput} → ${dateStr}</p>
+                </div>
+            `;
+        }
+
+        async function showCurrentDateState() {
+            const now = new Date();
+            const testDate = new Date('2025-08-12T00:00:00');
+            
+            log(`🗓️ Current Date State:`);
+            log(`   Now: ${now}`);
+            log(`   Now formatted: ${formatDateForDisplay(now)}`);
+            log(`   Test date (2025-08-12): ${testDate}`);
+            log(`   Test date formatted: ${formatDateForDisplay(testDate)}`);
+            log(`   Test date for input: ${formatDateForInput(testDate)}`);
+            
+            // Test what happens with your specific date
+            const yourDate = new Date('2025-08-12T00:00:00');
+            log(`   Your date string: ${formatDateForDisplay(yourDate)}`);
+        }
+
+        async function testKnownFile() {
+            log(`🎯 Testing Known File:`);
+            
+            const knownFiles = [
+                '12-08-2025 1pm.webp',
+                '12-08-2025 6pm.webp',
+                '14-08-2025 1pm.webp',
+                '15-08-2025 6pm.jpeg',
+                '23-08-2025 1pm.jpeg'
+            ];
+            
+            for (const filename of knownFiles) {
+                const exists = await checkImageExists(filename);
+                log(`   ${filename}: ${exists ? '✅' : '❌'}`);
+            }
+        }
+
+        // Test automatically when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Debug page loaded');
+            showCurrentDateState();
+        });
+    </script>
+</body>
+</html>

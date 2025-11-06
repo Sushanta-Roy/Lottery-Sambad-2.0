@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Image Matching Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .success { border-left-color: #28a745; }
+        .error { border-left-color: #dc3545; }
+        .warning { border-left-color: #ffc107; }
+        pre {
+            background: #343a40;
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .results {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Enhanced Image Matching System Test</h1>
+        <p>This test will verify that the enhanced image matching system works correctly with your existing image files.</p>
+
+        <div class="test-section">
+            <h3>📊 System Status</h3>
+            <div id="status">
+                <div>🔧 Server-side API: <span id="server-status">Testing...</span></div>
+                <div>🖥️ Client-side scanning: <span id="client-status">Ready</span></div>
+                <div>📁 Current directory: <code>D:\codes\image web</code></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Test Known Images</h3>
+            <p>Testing detection of your known image files:</p>
+            <button onclick="testKnownImages()">Test Known Images</button>
+            <div id="known-results" class="results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Test Specific Date/Time Search</h3>
+            <p>Test searching for specific date and time combinations:</p>
+            <div>
+                <input type="date" id="test-date" value="2025-08-12">
+                <select id="test-time">
+                    <option value="1pm">1:00 PM</option>
+                    <option value="6pm">6:00 PM</option>
+                    <option value="8pm">8:00 PM</option>
+                </select>
+                <button onclick="testSpecificSearch()">Search</button>
+            </div>
+            <div id="search-results" class="results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 All Available Images</h3>
+            <button onclick="loadAllImages()">Load All Images</button>
+            <div id="all-images" class="results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧹 Cache Management</h3>
+            <button onclick="clearCache()">Clear Cache</button>
+            <button onclick="refreshImages()">Refresh Images</button>
+            <div id="cache-results" class="results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Console Output</h3>
+            <p>Check browser console (F12) for detailed logs</p>
+            <pre id="console-output"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Image Testing System
+        class ImageTestController {
+            constructor() {
+                this.availableImages = [];
+                this.imageFormats = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp'];
+                this.knownImages = [
+                    '12-08-2025 1pm.webp',
+                    '12-08-2025 6pm.webp', 
+                    '14-08-2025 1pm.webp',
+                    '15-08-2025 6pm.jpeg',
+                    '23-08-2025 1pm.jpeg'
+                ];
+                this.testServerAPI();
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logMessage = `[${timestamp}] ${message}`;
+                console.log(logMessage);
+                
+                // Also display in the UI
+                const consoleOutput = document.getElementById('console-output');
+                if (consoleOutput) {
+                    consoleOutput.textContent += logMessage + '\n';
+                    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                }
+            }
+
+            async testServerAPI() {
+                const statusEl = document.getElementById('server-status');
+                try {
+                    const response = await fetch('api/get-images.php?action=list');
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            statusEl.textContent = `✅ Available (${data.count} images)`;
+                            statusEl.style.color = 'green';
+                            this.log('🚀 Server-side API is working!');
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    statusEl.textContent = '❌ Not Available';
+                    statusEl.style.color = 'red';
+                    this.log('⚠️ Server-side API not available: ' + error.message);
+                }
+                return false;
+            }
+
+            parseImageName(filename) {
+                const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+                
+                // Match pattern: (optional "File ") + DD-MM-YYYY HHpm/am
+                const dateTimeRegex = /^(?:File\s+)?(\d{1,2})-(\d{1,2})-(\d{4})\s+(\d{1,2})(pm|am)$/i;
+                const match = nameWithoutExt.match(dateTimeRegex);
+                
+                if (!match) return null;
+                
+                const [, day, month, year, hour, period] = match;
+                
+                // Validate date components
+                const dayNum = parseInt(day, 10);
+                const monthNum = parseInt(month, 10);
+                const yearNum = parseInt(year, 10);
+                const hourNum = parseInt(hour, 10);
+                
+                if (dayNum < 1 || dayNum > 31 || monthNum < 1 || monthNum > 12 || hourNum < 1 || hourNum > 12) {
+                    return null;
+                }
+                
+                // Convert to 24-hour format
+                let hour24 = hourNum;
+                if (period.toLowerCase() === 'pm' && hourNum !== 12) {
+                    hour24 += 12;
+                } else if (period.toLowerCase() === 'am' && hourNum === 12) {
+                    hour24 = 0;
+                }
+                
+                try {
+                    const date = new Date(yearNum, monthNum - 1, dayNum, hour24, 0, 0);
+                    return {
+                        date: date,
+                        day: dayNum,
+                        month: monthNum,
+                        year: yearNum,
+                        hour: hourNum,
+                        period: period.toLowerCase(),
+                        hour24: hour24,
+                        originalFilename: filename,
+                        filename: filename,
+                        displayTime: `${hourNum}${period.toLowerCase()}`
+                    };
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            async checkImageExists(filename) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    let resolved = false;
+                    
+                    const timeout = setTimeout(() => {
+                        if (!resolved) {
+                            resolved = true;
+                            resolve(false);
+                        }
+                    }, 2000);
+                    
+                    img.onload = () => {
+                        if (!resolved) {
+                            resolved = true;
+                            clearTimeout(timeout);
+                            resolve(true);
+                        }
+                    };
+                    
+                    img.onerror = () => {
+                        if (!resolved) {
+                            resolved = true;
+                            clearTimeout(timeout);
+                            resolve(false);
+                        }
+                    };
+                    
+                    img.src = filename;
+                });
+            }
+
+            async loadImagesFromServer() {
+                try {
+                    const response = await fetch('api/get-images.php?action=list');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    if (data.success && data.images) {
+                        return data.images.map(img => {
+                            const date = new Date(img.year, img.month - 1, img.day, img.hour24, 0, 0);
+                            return {
+                                originalFilename: img.filename,
+                                filename: img.filename,
+                                date: date,
+                                day: img.day,
+                                month: img.month,
+                                year: img.year,
+                                hour: img.hour,
+                                period: img.period,
+                                hour24: img.hour24,
+                                displayTime: img.displayTime,
+                                timestamp: img.timestamp,
+                                fileSize: img.fileSize,
+                                lastModified: img.lastModified
+                            };
+                        });
+                    }
+                    return null;
+                } catch (error) {
+                    this.log('⚠️ Server-side API error: ' + error.message);
+                    return null;
+                }
+            }
+
+            async findImageOnServer(dateStr, timeValue) {
+                try {
+                    const response = await fetch(`api/get-images.php?action=find&date=${encodeURIComponent(dateStr)}&time=${encodeURIComponent(timeValue)}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    if (data.success && data.found && data.image) {
+                        return data.image;
+                    }
+                    return null;
+                } catch (error) {
+                    this.log('⚠️ Server-side find error: ' + error.message);
+                    return null;
+                }
+            }
+        }
+
+        // Initialize test system
+        let testController;
+        window.addEventListener('DOMContentLoaded', () => {
+            testController = new ImageTestController();
+        });
+
+        // Test Functions
+        async function testKnownImages() {
+            const resultsEl = document.getElementById('known-results');
+            resultsEl.innerHTML = '<div>Testing known images...</div>';
+            
+            const results = [];
+            for (const filename of testController.knownImages) {
+                testController.log(`🔍 Testing: ${filename}`);
+                const exists = await testController.checkImageExists(filename);
+                const parsed = testController.parseImageName(filename);
+                
+                results.push(`
+                    <div style="margin: 5px 0; padding: 8px; background: ${exists ? '#d4edda' : '#f8d7da'}; border-radius: 3px;">
+                        📁 <strong>${filename}</strong><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Exists: ${exists ? '✅ Yes' : '❌ No'}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Parsed: ${parsed ? '✅ Success' : '❌ Failed'}<br>
+                        ${parsed ? `&nbsp;&nbsp;&nbsp;&nbsp;Date: ${parsed.date.toDateString()}, Time: ${parsed.displayTime}` : ''}
+                    </div>
+                `);
+            }
+            
+            resultsEl.innerHTML = results.join('');
+        }
+
+        async function testSpecificSearch() {
+            const dateInput = document.getElementById('test-date').value;
+            const timeInput = document.getElementById('test-time').value;
+            const resultsEl = document.getElementById('search-results');
+            
+            // Convert date format from YYYY-MM-DD to DD-MM-YYYY
+            const [year, month, day] = dateInput.split('-');
+            const dateStr = `${day}-${month}-${year}`;
+            
+            resultsEl.innerHTML = `<div>Searching for ${dateStr} ${timeInput}...</div>`;
+            testController.log(`🔍 Searching for: ${dateStr} ${timeInput}`);
+            
+            // Try server-side first
+            const serverResult = await testController.findImageOnServer(dateStr, timeInput);
+            if (serverResult) {
+                resultsEl.innerHTML = `
+                    <div style="background: #d4edda; padding: 10px; border-radius: 5px;">
+                        <strong>🚀 Server-side result:</strong><br>
+                        File: ${serverResult.filename}<br>
+                        Size: ${serverResult.fileSize} bytes<br>
+                        Modified: ${new Date(serverResult.lastModified * 1000).toLocaleString()}
+                    </div>
+                `;
+                return;
+            }
+            
+            // Fallback to client-side
+            testController.log('📡 Server not available, trying client-side...');
+            const extensions = ['webp', 'jpeg', 'jpg', 'png', 'gif', 'bmp'];
+            const prefixes = ['', 'File '];
+            
+            for (const prefix of prefixes) {
+                for (const ext of extensions) {
+                    const filename = `${prefix}${dateStr} ${timeInput}.${ext}`;
+                    const exists = await testController.checkImageExists(filename);
+                    if (exists) {
+                        const parsed = testController.parseImageName(filename);
+                        resultsEl.innerHTML = `
+                            <div style="background: #d4edda; padding: 10px; border-radius: 5px;">
+                                <strong>✅ Client-side result:</strong><br>
+                                File: ${filename}<br>
+                                Parsed: ${parsed ? 'Success' : 'Failed'}
+                            </div>
+                        `;
+                        return;
+                    }
+                }
+            }
+            
+            resultsEl.innerHTML = `
+                <div style="background: #f8d7da; padding: 10px; border-radius: 5px;">
+                    <strong>❌ No image found for ${dateStr} ${timeInput}</strong>
+                </div>
+            `;
+        }
+
+        async function loadAllImages() {
+            const resultsEl = document.getElementById('all-images');
+            resultsEl.innerHTML = '<div>Loading all images...</div>';
+            
+            // Try server-side first
+            const serverImages = await testController.loadImagesFromServer();
+            if (serverImages && serverImages.length > 0) {
+                let html = '<h4>🚀 Server-side results:</h4>';
+                serverImages.forEach(img => {
+                    html += `
+                        <div style="margin: 5px 0; padding: 8px; background: #e3f2fd; border-radius: 3px;">
+                            📷 <strong>${img.filename}</strong><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;Date: ${img.date.toDateString()}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;Time: ${img.displayTime}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;Size: ${img.fileSize} bytes
+                        </div>
+                    `;
+                });
+                resultsEl.innerHTML = html;
+                return;
+            }
+            
+            // Fallback to client-side
+            testController.log('📡 Server not available, using client-side scanning...');
+            const foundImages = [];
+            for (const filename of testController.knownImages) {
+                const exists = await testController.checkImageExists(filename);
+                if (exists) {
+                    const parsed = testController.parseImageName(filename);
+                    if (parsed) {
+                        foundImages.push(parsed);
+                    }
+                }
+            }
+            
+            let html = '<h4>🖥️ Client-side results:</h4>';
+            foundImages.forEach(img => {
+                html += `
+                    <div style="margin: 5px 0; padding: 8px; background: #fff3cd; border-radius: 3px;">
+                        📷 <strong>${img.filename}</strong><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Date: ${img.date.toDateString()}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Time: ${img.displayTime}
+                    </div>
+                `;
+            });
+            
+            resultsEl.innerHTML = html || '<div>No images found</div>';
+        }
+
+        async function clearCache() {
+            const resultsEl = document.getElementById('cache-results');
+            try {
+                const response = await fetch('api/get-images.php?action=clear-cache');
+                if (response.ok) {
+                    const data = await response.json();
+                    resultsEl.innerHTML = `<div style="background: #d4edda; padding: 10px; border-radius: 5px;">✅ Server cache cleared: ${data.cache_cleared}</div>`;
+                } else {
+                    throw new Error('Cache clear failed');
+                }
+            } catch (error) {
+                resultsEl.innerHTML = `<div style="background: #f8d7da; padding: 10px; border-radius: 5px;">❌ Server cache clear failed: ${error.message}</div>`;
+            }
+        }
+
+        async function refreshImages() {
+            const resultsEl = document.getElementById('cache-results');
+            resultsEl.innerHTML = '<div>Refreshing images...</div>';
+            
+            await clearCache();
+            await loadAllImages();
+            
+            resultsEl.innerHTML = '<div style="background: #d1ecf1; padding: 10px; border-radius: 5px;">🔄 Images refreshed successfully</div>';
+        }
+    </script>
+</body>
+</html>

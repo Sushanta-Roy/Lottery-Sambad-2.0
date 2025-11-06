@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Image Test</title>
+</head>
+<body>
+    <h1>Testing if images load directly</h1>
+    
+    <h2>12-08-2025 1pm.webp:</h2>
+    <img src="12-08-2025 1pm.webp" alt="1pm" style="max-width: 300px; border: 2px solid red;">
+    
+    <h2>12-08-2025 6pm.webp:</h2>
+    <img src="12-08-2025 6pm.webp" alt="6pm" style="max-width: 300px; border: 2px solid blue;">
+    
+    <script>
+        // Test if images exist using JavaScript
+        const images = ['12-08-2025 1pm.webp', '12-08-2025 6pm.webp'];
+        
+        images.forEach(filename => {
+            const img = new Image();
+            img.onload = function() {
+                console.log(`✅ ${filename} loaded successfully`);
+            };
+            img.onerror = function() {
+                console.log(`❌ ${filename} failed to load`);
+            };
+            img.src = filename;
+        });
+    </script>
+</body>
+</html>

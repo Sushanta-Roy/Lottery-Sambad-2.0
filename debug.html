@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Image Detection</title>
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+</head>
+<body>
+    <h1>Debug: Image Detection Test</h1>
+    <div id="output"></div>
+    
+    <script>
+        async function testImageExists(filename) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    console.log(`✅ Image loaded: ${filename}`);
+                    resolve(true);
+                };
+                img.onerror = () => {
+                    console.log(`❌ Image failed: ${filename}`);
+                    resolve(false);
+                };
+                img.src = filename;
+            });
+        }
+        
+        function parseImageName(filename) {
+            const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+            console.log(`Parsing: "${filename}" -> "${nameWithoutExt}"`);
+            
+            // Match pattern: DD-MM-YYYY HHpm/am
+            const dateTimeRegex = /^(\d{1,2})-(\d{1,2})-(\d{4})\s+(\d{1,2})(pm|am)$/i;
+            const match = nameWithoutExt.match(dateTimeRegex);
+            
+            if (!match) {
+                console.log(`❌ No regex match for: ${nameWithoutExt}`);
+                return null;
+            }
+            
+            const [, day, month, year, hour, period] = match;
+            console.log(`✅ Regex matched: day=${day}, month=${month}, year=${year}, hour=${hour}, period=${period}`);
+            
+            // Validate date components
+            const dayNum = parseInt(day, 10);
+            const monthNum = parseInt(month, 10);
+            const yearNum = parseInt(year, 10);
+            const hourNum = parseInt(hour, 10);
+            
+            if (dayNum < 1 || dayNum > 31 || monthNum < 1 || monthNum > 12 || hourNum < 1 || hourNum > 12) {
+                console.log(`❌ Invalid date components: day=${dayNum}, month=${monthNum}, year=${yearNum}, hour=${hourNum}`);
+                return null;
+            }
+            
+            // Convert to 24-hour format
+            let hour24 = hourNum;
+            if (period.toLowerCase() === 'pm' && hourNum !== 12) {
+                hour24 += 12;
+            } else if (period.toLowerCase() === 'am' && hourNum === 12) {
+                hour24 = 0;
+            }
+            
+            try {
+                const date = new Date(yearNum, monthNum - 1, dayNum, hour24, 0, 0);
+                console.log(`✅ Created date: ${date.toDateString()}`);
+                return {
+                    date: date,
+                    day: dayNum,
+                    month: monthNum,
+                    year: yearNum,
+                    hour: hourNum,
+                    period: period.toLowerCase(),
+                    hour24: hour24,
+                    originalFilename: filename,
+                    displayTime: `${hourNum}${period.toLowerCase()}`
+                };
+            } catch (error) {
+                console.log(`❌ Date creation error: ${error}`);
+                return null;
+            }
+        }
+        
+        async function runTests() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Testing...</h2>';
+            
+            console.log('=== STARTING DEBUG TESTS ===');
+            
+            const testFiles = [
+                '12-08-2025 1pm.webp',
+                '12-08-2025 6pm.webp',
+                '14-08-2025 1pm.webp',
+                '15-08-2025 6pm.jpeg',
+                '23-08-2025 1pm.jpeg'
+            ];
+            
+            let results = '<h2>Test Results:</h2>';
+            
+            for (const filename of testFiles) {
+                console.log(`\n--- Testing: ${filename} ---`);
+                
+                // Test parsing
+                const parsed = parseImageName(filename);
+                
+                // Test image loading
+                const imageExists = await testImageExists(filename);
+                
+                results += `<div style="margin: 10px 0; padding: 10px; border: 1px solid #ccc;">
+                    <strong>${filename}</strong><br>
+                    File exists: ${imageExists ? '✅ YES' : '❌ NO'}<br>
+                    Parsed correctly: ${parsed ? '✅ YES' : '❌ NO'}<br>
+                    ${parsed ? `Date: ${parsed.date.toDateString()}<br>Display Time: ${parsed.displayTime}` : ''}
+                </div>`;
+            }
+            
+            // Test specific date
+            console.log('\n--- Testing date matching ---');
+            const testDate = new Date(2025, 7, 12); // August 12, 2025 (month is 0-based)
+            console.log(`Test date: ${testDate.toDateString()}`);
+            
+            const parsedImage = parseImageName('12-08-2025 1pm.webp');
+            if (parsedImage) {
+                console.log(`Parsed date: ${parsedImage.date.toDateString()}`);
+                console.log(`Dates match: ${parsedImage.date.toDateString() === testDate.toDateString()}`);
+            }
+            
+            output.innerHTML = results;
+            console.log('=== DEBUG TESTS COMPLETE ===');
+        }
+        
+        // Run tests when page loads
+        window.onload = runTests;
+    </script>
+</body>
+</html>

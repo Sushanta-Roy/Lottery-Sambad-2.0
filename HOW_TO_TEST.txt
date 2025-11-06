@@ -1,0 +1,58 @@
+🚀 HOW TO TEST YOUR CONTACT FORM LOCALLY
+==========================================
+
+STEP 1: Start the PHP Server
+-----------------------------
+1. Go to: D:\codes\image web
+2. Double-click: start-server.bat
+3. A black window will open showing "PHP Development Server Starting..."
+4. KEEP THIS WINDOW OPEN (don't close it!)
+
+STEP 2: Open Your Website
+--------------------------
+1. Open your web browser
+2. Go to: http://localhost:8000/contact.html
+3. Your contact page will load!
+
+STEP 3: Test the Contact Form
+------------------------------
+1. Fill out the contact form with test data
+2. Click "Send Message"
+3. You should see: "Thank you for your message!"
+4. An email will be sent to resultl460@gmail.com
+
+STEP 4: Check Your Email
+-------------------------
+1. Open resultl460@gmail.com
+2. Look for an email from your contact form
+3. Check the spam folder if you don't see it
+
+STEP 5: Stop the Server (When Done Testing)
+-------------------------------------------
+1. Go back to the black command window
+2. Press Ctrl+C to stop the server
+3. Close the window
+
+⚠️ IMPORTANT NOTES:
+-------------------
+• The server must be running to test the form
+• Keep the black window open while testing
+• Use http://localhost:8000 NOT file:// in your browser
+• The PHP mail() function may not work on Windows without additional setup
+• For production use, upload to your real web hosting server
+
+🔴 IF EMAILS DON'T ARRIVE LOCALLY:
+-----------------------------------
+The PHP mail() function on Windows requires a mail server to be configured.
+This is normal - it will work perfectly when you upload to your real web hosting!
+
+FOR NOW, you can:
+1. Just upload everything to your real server (RECOMMENDED)
+2. Or use the mailto fallback that's already working
+
+✅ ON YOUR REAL WEB SERVER:
+---------------------------
+Everything will work automatically - no setup needed!
+Just upload all files and test on your live website.
+
+Need help? Let me know!
