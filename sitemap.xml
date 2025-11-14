@@ -4,39 +4,40 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
-    <loc>https://www.lotterysambad.host/</loc>
+    <loc>https://lotterysambad.host/</loc>
     <lastmod>2025-11-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.lotterysambad.host/index.html</loc>
+    <loc>https://lotterysambad.host/index.html</loc>
     <lastmod>2025-11-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.lotterysambad.host/about.html</loc>
+    <loc>https://lotterysambad.host/about.html</loc>
     <lastmod>2025-11-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.lotterysambad.host/contact.html</loc>
+    <loc>https://lotterysambad.host/contact.html</loc>
     <lastmod>2025-11-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.lotterysambad.host/privacy.html</loc>
+    <loc>https://lotterysambad.host/privacy.html</loc>
     <lastmod>2025-11-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.lotterysambad.host/terms.html</loc>
+    <loc>https://lotterysambad.host/terms.html</loc>
     <lastmod>2025-11-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
 </urlset>
+
