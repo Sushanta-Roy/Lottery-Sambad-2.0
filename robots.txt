@@ -5,7 +5,7 @@ Allow: /
 Disallow:
 
 # Sitemap location
-Sitemap: https://yourwebsite.com/sitemap.xml
+Sitemap: https://lotterysambad.host/sitemap.xml
 
 # Crawl delay (optional - helps prevent server overload)
 Crawl-delay: 1
@@ -20,3 +20,4 @@ Allow: /
 # Block access to certain file types (if needed)
 # Disallow: *.pdf
 # Disallow: *.doc
+
